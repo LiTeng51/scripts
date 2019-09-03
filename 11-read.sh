@@ -41,9 +41,13 @@ fi
 
 main(){
 read -p "chuancan" a b
-if [ $# -ne 2 ]
+if [ -z $a ]
 then
 exit 66
+fi
+if [ -z $b ]
+then
+exit 67
 fi
 cz
 zs
