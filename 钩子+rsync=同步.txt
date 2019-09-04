@@ -1,0 +1,20 @@
+SVN服务器端：
+	mkdir /backup
+	 svn checkout file:///application/svndata/sadoc/ /backup
+	 cp -a /application/svndata/sadoc/hooks/post-commit.tmpl  /application/svndata/sadoc/hooks/post-commit
+	 chmod 755 /application/svndata/sadoc/hooks/post-commit
+  创建脚本：
+	vim /application/svndata/sadoc/hooks/post-commit   将里面的所有替换成以下脚本
+#!/bin/bash
+PEPOS="$1"
+REV="$2"
+export LANG=en_US.UTF-8
+LOGPATH="/var/log/svn"
+[ ! -d ${LOGPATH} ] && mkdir $LOGPATH -p
+SVN=/usr/bin/svn
+$SVN update --username=LT --password=Linux /backup
+if [ $? -eq 0 ]
+then
+     rsync -az /backup/ rsync_backup@172.16.1.41::backup/ --password-file=/etc/rsync.password
+fi
+		
